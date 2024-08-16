@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import SectionWrapper from "./SectionWrapper";
 import { SCHEMES, WORKOUTS } from "../utils/swoldier";
+import Button from "./Button";
 
 function Header(props) {
   const { index, title, description } = props;
@@ -27,6 +28,28 @@ const Generator = () => {
     setshowModal(!showModal);
   }
 
+  function updateMuscles(muscleGroup) {
+    if (muscles.includes(muscleGroup)) {
+        setMuscles(muscles.filter((val) => val !== muscleGroup));
+        return;
+      }
+
+    if (muscles.length > 2) {
+      return;
+    }
+
+    if (poison !== "individual") {
+      setMuscles([muscleGroup]);
+      setshowModal(false)
+      return;
+    }
+
+    setMuscles([...muscles, muscleGroup]);
+    if(muscles.length === 2) {
+        setshowModal(false)
+    }
+  }
+
   return (
     <SectionWrapper
       header={"generate your workout"}
@@ -42,15 +65,16 @@ const Generator = () => {
           return (
             <button
               onClick={() => {
+                setMuscles([])
                 setPoison(type);
               }}
               key={typeIndex}
               className={
-                "border rounded-lg py-3 bg-slate-950 duration-200 border-blue-400 hover:border-blue-800" +
+                "border rounded-lg py-3 bg-slate-950 px-4 duration-200 border-blue-400 hover:border-blue-800" +
                 (type === poison ? " border-blue-800 " : " border-blue-400 ")
               }
             >
-              <p className="capatalize">{type.replaceAll("_", " ")}</p>
+              <p className="capitalize">{type.replaceAll("_", " ")}</p>
             </button>
           );
         })}
@@ -65,7 +89,7 @@ const Generator = () => {
           onClick={toggleModal}
           className="relative flex p-3 items-center justify-center"
         >
-          <p>Select muscle groups</p>
+          <p className="capitalize">{muscles.length == 0 ? "Select muscle groups" : muscles.join(' ') }</p>
           <i className="fa-solid fa-caret-down absolute right-3 top-1/2 -translate-y-1/2"></i>
         </button>
         {showModal && (
@@ -76,15 +100,20 @@ const Generator = () => {
             ).map((muscleGroup, muscleGroupIndex) => {
               return (
                 <button
-                  onClick={() => {}}
+                  onClick={() => {
+                    updateMuscles(muscleGroup);
+                  }}
                   key={muscleGroupIndex}
-                  className="hover:text-blue-400 duration-200"
+                  className={
+                    "hover:text-blue-800 duration-200 " +
+                    (muscles.includes(muscleGroup) ? " text-blue-600" : " ")
+                  }
                 >
                   <p className="uppercase">
                     {muscleGroup.replaceAll("_", " ")}
                   </p>
-                </button> 
-              );s
+                </button>
+              );
             })}
           </div>
         )}
@@ -94,7 +123,7 @@ const Generator = () => {
         title={"Become Juggernaut"}
         description={"Select your ultimate objective."}
       />
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {Object.keys(SCHEMES).map((scheme, schemeIndex) => {
           return (
             <button
@@ -103,15 +132,16 @@ const Generator = () => {
               }}
               key={schemeIndex}
               className={
-                "border rounded-lg py-3 bg-slate-950 duration-200 border-blue-400 hover:border-blue-800" +
+                "border rounded-lg py-3 px-4 bg-slate-950 duration-200 border-blue-400 hover:border-blue-800" +
                 (scheme === goal ? " border-blue-800 " : " border-blue-400 ")
               }
             >
-              <p className="capatalize">{scheme.replaceAll("_", " ")}</p>
+              <p className="capitalize">{scheme.replaceAll("_", " ")}</p>
             </button>
           );
         })}
       </div>
+      <Button text="Formulate" />
     </SectionWrapper>
   );
 };

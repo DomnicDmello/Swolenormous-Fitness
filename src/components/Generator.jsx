@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { React, useState } from "react";
 import SectionWrapper from "./SectionWrapper";
 import { SCHEMES, WORKOUTS } from "../utils/swoldier";
 import Button from "./Button";
@@ -18,14 +18,12 @@ function Header(props) {
   );
 }
 
-const Generator = () => {
+const Generator = (props) => {
+  const {muscles, setMuscles, poison, setPoison, goal, setGoal, updateWorkout} = props
   const [showModal, setshowModal] = useState(false);
-  const [poison, setPoison] = useState("individual");
-  const [muscles, setMuscles] = useState([]);
-  const [goal, setGoal] = useState("strength_power");
 
   function toggleModal() {
-    setshowModal(!showModal);
+    setshowModal(!showModal);  
   }
 
   function updateMuscles(muscleGroup) {
@@ -141,7 +139,7 @@ const Generator = () => {
           );
         })}
       </div>
-      <Button text="Formulate" />
+      <Button func={updateWorkout} text="Formulate" />
     </SectionWrapper>
   );
 };
